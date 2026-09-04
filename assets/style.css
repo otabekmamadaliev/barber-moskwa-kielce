@@ -1,0 +1,391 @@
+/* Barber Shop Łukasz Moskwa — arkusz wyłącznie tej strony.
+ *
+ * Kierunek zdjęty z newyorkbarbershop.ca — zmierzony, nie przepisany:
+ *   • H1 82 px / waga 800 / interlinia równa rozmiarowi
+ *   • Montserrat do wszystkiego, Playfair Display tylko jako kursywa akcentowa
+ *   • czerń #0D0D0D na kremie #F7F4EF, zero zaokrągleń (173 elementy na 0px)
+ *   • przejścia 0.5–0.8 s
+ *   • ich keyframe `wordIn` — nagłówek wjeżdża SŁOWO PO SŁOWIE
+ * Ten ostatni pomysł jest tu najważniejszy i jedyny wzięty wprost.
+ * Układ, treść i proporcje są nasze.
+ */
+
+:root{
+  --czern:#0D0D0D;
+  --krem:#F7F4EF;
+  --krem-cien:#EDE8E0;
+  /* Bylo #77716A — 4.40:1 na kremie, tuz ponizej progu 4.5:1, a idzie nim
+     caly tekst pomocniczy i godziny. #665F57 daje 5.4:1. */
+  --szary:#665F57;
+  --linia:rgba(13,13,13,.14);
+  --font:'Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --serif:'Playfair Display',Georgia,serif;
+  --szer:1200px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;background:var(--krem);color:var(--czern);
+  font:400 16.5px/1.68 var(--font);-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+/* Interlinia 1.04, nie 1.0 jak w oryginale: polskie Ą i Ę mają ogonki,
+   które przy interlinii równej rozmiarowi wchodzą w wiersz niżej. */
+h1,h2{font-weight:800;line-height:1.04;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.skip{position:absolute;left:-9999px;background:var(--czern);color:var(--krem);padding:10px 16px;z-index:200}
+.skip:focus{left:12px;top:12px}
+:focus-visible{outline:2px solid var(--czern);outline-offset:3px}
+.mini{font-size:.7rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--szary);margin:0 0 22px}
+.podtytul{font-size:1.05rem;color:var(--szary);max-width:52ch;margin:26px 0 0}
+.mala{font-size:.85rem;color:var(--szary);margin:16px 0 0;max-width:46ch}
+
+/* ------------------------------------------------------------- pasek */
+.top{position:sticky;top:0;z-index:90;display:flex;align-items:center;gap:30px;
+  padding:16px clamp(18px,5vw,52px);background:rgba(247,244,239,.94);
+  border-bottom:1px solid var(--linia);transition:padding .6s ease,box-shadow .6s ease}
+.top.przewiniety{padding:9px clamp(18px,5vw,52px);box-shadow:0 1px 0 var(--linia)}
+.logo{display:flex;align-items:baseline;gap:11px;text-decoration:none;font-weight:800;
+  font-size:1.3rem;letter-spacing:-.03em;margin-right:auto}
+.logo span{font-size:.66rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--szary)}
+.linki{display:flex;gap:30px}
+.linki a{font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  text-decoration:none;padding:5px 0;border-bottom:2px solid transparent;transition:border-color .5s}
+.linki a:hover{border-bottom-color:var(--czern)}
+.jez{display:flex;gap:2px}
+.jez .lang{font-size:.68rem;font-weight:700;letter-spacing:.1em;padding:5px 7px;
+  text-decoration:none;color:var(--szary);transition:color .5s}
+.jez .lang:hover{color:var(--czern)}
+.jez .lang.is-on{color:var(--czern);border-bottom:2px solid var(--czern)}
+.menu-btn{display:none;background:0;border:0;padding:10px;cursor:pointer;flex-direction:column;gap:6px}
+.menu-btn span{display:block;width:26px;height:2px;background:var(--czern)}
+.mob{display:none}
+
+/* ----------------------------------------------------------- wejście */
+.wejscie{display:grid;gap:clamp(34px,5vw,60px);
+  padding:clamp(56px,8vw,110px) clamp(18px,5vw,52px) clamp(50px,7vw,90px);
+  max-width:var(--szer);margin:0 auto}
+/* Wzorzec miał 82 px, ale przy czterech słowach ("Real Cuts. Real People.").
+   Nasz nagłówek ma siedem polskich słów — w tej samej skali zjadał cały
+   pierwszy ekran i spychał przycisk z telefonem poniżej zgięcia. */
+.wejscie h1{font-size:clamp(2.2rem,5.4vw,4rem)}
+/* wordIn — każde słowo osobno, z narastającym opóźnieniem */
+.slowo{display:inline-block;opacity:0;transform:translateY(.5em);
+  animation:wjazd .8s cubic-bezier(.2,.7,.25,1) forwards}
+@keyframes wjazd{to{opacity:1;transform:none}}
+.akcje{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:38px}
+.czarny{display:inline-block;background:var(--czern);color:var(--krem);text-decoration:none;
+  font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:19px 40px;transition:background .5s ease,transform .5s ease}
+.czarny:hover{background:#2b2b2b;transform:translateY(-2px)}
+.linia{font-weight:600;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;border-bottom:2px solid var(--czern);padding-bottom:3px;transition:opacity .5s}
+.linia:hover{opacity:.55}
+.wejscie-foto{position:relative;overflow:hidden;background:var(--krem-cien)}
+.wejscie-foto img{width:100%;height:clamp(300px,52vw,600px);object-fit:cover}
+
+/* ----------------------------------------------------------- liczby */
+.liczby{background:var(--czern);color:var(--krem);display:grid;gap:0}
+.liczby div{padding:clamp(30px,4vw,48px) clamp(18px,5vw,52px);
+  border-bottom:1px solid rgba(247,244,239,.13)}
+.liczby b{display:block;font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.liczby span{font-size:.84rem;color:rgba(247,244,239,.55)}
+
+/* ----------------------------------------------------------- zakład */
+.zaklad,.cennik,.kiedy{max-width:var(--szer);margin:0 auto;
+  padding:clamp(66px,10vw,140px) clamp(18px,5vw,52px)}
+.zaklad h2,.cennik h2,.kiedy h2{font-size:clamp(1.9rem,5vw,3.5rem);max-width:18ch;margin-bottom:.55em}
+.zaklad-tresc{columns:2;column-gap:48px;max-width:960px}
+.zaklad-tresc p{margin:0 0 1.25em;break-inside:avoid;color:#3c3833}
+.punkty{list-style:none;margin:52px 0 0;padding:0;display:grid;gap:0;border-top:2px solid var(--czern)}
+.punkty li{padding:19px 0 19px 34px;border-bottom:1px solid var(--linia);position:relative;font-size:.98rem}
+.punkty li::before{content:"";position:absolute;left:0;top:28px;width:18px;height:2px;background:var(--czern)}
+
+/* To zdjecie to ciasny kadr na dlonie przy strzyzeniu — 1200x900, blisko.
+   Rozciagniete na pelna szerokosc przy 500 px wysokosci dawalo 2.9:1: `cover`
+   przycinal do samego srodka, czyli do jednej dloni, i jeszcze skalowal plik
+   ponad wlasna rozdzielczosc. Stad ta ogromna reka.
+   Kadru sie nie da naprawic kadrowaniem — trzeba przestac go powiekszac.
+   Zdjecie dostaje wiec wlasne proporcje 4:3, szerokosc ograniczona do zrodla
+   i pozycje w kolumnie tekstu, czyli czyta sie jak fotografia, a nie jak pas. */
+.szeroki{margin:0 auto;max-width:760px;padding:0 clamp(18px,5vw,52px);
+  background:transparent;overflow:visible}
+.szeroki img{width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;object-position:50% 40%}
+
+/* ----------------------------------------------------------- cennik */
+.cennik{max-width:none;background:var(--czern);color:var(--krem)}
+.cennik > *{max-width:var(--szer);margin-inline:auto}
+.cennik .podtytul{color:rgba(247,244,239,.6)}
+.karta{margin:56px 0 0}
+.poz{display:grid;grid-template-columns:1fr auto;gap:8px 20px;align-items:baseline;
+  padding:24px 0;border-bottom:1px solid rgba(247,244,239,.16)}
+.poz:first-child{border-top:1px solid rgba(247,244,239,.16)}
+.poz dt{font-weight:700;font-size:clamp(1.05rem,2vw,1.35rem);letter-spacing:-.01em}
+.poz dt em{display:block;font-style:normal;font-weight:400;font-size:.93rem;
+  color:rgba(247,244,239,.55);margin-top:7px;max-width:60ch}
+.poz dd{margin:0;font-family:var(--serif);font-style:italic;font-size:1.05rem;
+  color:rgba(247,244,239,.8);white-space:nowrap}
+.nota{margin-top:46px;font-size:.92rem;color:rgba(247,244,239,.5);max-width:62ch}
+.nota--jasna{color:var(--szary)}
+
+/* ------------------------------------------------------------ praca */
+.praca{padding:clamp(66px,10vw,130px) 0}
+.praca-tyt{max-width:var(--szer);margin:0 auto 42px;padding:0 clamp(18px,5vw,52px);
+  font-size:clamp(1.7rem,4vw,2.8rem)}
+.praca-siatka{display:grid;gap:3px}
+.praca figure{margin:0;position:relative;overflow:hidden;background:var(--krem-cien)}
+.praca img{width:100%;height:clamp(260px,32vw,420px);object-fit:cover;
+  transition:transform 1s cubic-bezier(.2,.7,.25,1)}
+.praca figure:hover img{transform:scale(1.05)}
+.praca figcaption{position:absolute;left:0;bottom:0;background:var(--czern);color:var(--krem);
+  padding:9px 16px;font-size:.66rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+.praca .nota{max-width:var(--szer);margin:18px auto 0;padding:0 clamp(18px,5vw,52px)}
+
+/* ------------------------------------------------------------ kiedy */
+.kiedy{display:grid;gap:clamp(38px,6vw,80px)}
+.kiedy table{width:100%;border-collapse:collapse;max-width:500px}
+.kiedy th,.kiedy td{padding:14px 0;border-bottom:1px solid var(--linia);text-align:left;font-weight:400}
+.kiedy th{font-weight:600;font-size:.92rem}
+.kiedy td{text-align:right;font-variant-numeric:tabular-nums;color:var(--szary)}
+.gdzie{background:var(--krem-cien);padding:clamp(28px,4vw,44px);align-self:start}
+.ulica{margin:0 0 18px;line-height:1.8}
+.tel{display:block;font-size:clamp(1.5rem,3.4vw,2.2rem);font-weight:800;letter-spacing:-.02em;
+  text-decoration:none;margin-bottom:8px}
+.tel:hover{opacity:.6}
+
+/* -------------------------------------------------------------- dół */
+/* Stopka do lewej i wordmark urosniety do rozmiaru naglowka: to jest ostatnie
+   uderzenie typografii na stronie, ktora typografia stoi. */
+.dol{background:var(--czern);padding:56px clamp(20px,6vw,64px)}
+/* Stopka jest czarna, wiec dziedziczy --szary w druga strone: ten sam kolor,
+   ktory na kremie daje 5.4:1, na #0D0D0D daje 3.09:1. Wlasny, jasniejszy. */
+.dol .mala{margin:0;font-size:.8rem;letter-spacing:.04em;color:rgba(247,244,239,.62)}
+.dol-logo{margin:0 0 16px;font-size:clamp(2.1rem,7vw,3.2rem);font-weight:800;
+  letter-spacing:-.03em;line-height:.95;color:var(--krem)}
+.dol-linia{margin:0 0 8px;font-size:.95rem;color:rgba(247,244,239,.74)}
+
+/* ----------------------------------------------------------- szerzej */
+@media (min-width:900px){
+  .wejscie{grid-template-columns:1fr 1fr;align-items:center}
+  .liczby{grid-template-columns:repeat(3,1fr)}
+  .liczby div{border-bottom:0;border-right:1px solid rgba(247,244,239,.13)}
+  .liczby div:last-child{border-right:0}
+  .kiedy{grid-template-columns:1.3fr .7fr}
+  .praca-siatka{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:899px){
+  .linki{display:none}
+  .menu-btn{display:flex}
+  .mob{display:none;position:fixed;inset:70px 0 auto;z-index:85;background:var(--krem);
+    border-bottom:1px solid var(--linia);padding:12px 22px 22px;flex-direction:column}
+  .mob.otwarte{display:flex}
+  .mob a{text-decoration:none;font-weight:700;font-size:.82rem;letter-spacing:.14em;
+    text-transform:uppercase;padding:15px 0;border-bottom:1px solid var(--linia)}
+  .zaklad-tresc{columns:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  .slowo{opacity:1;transform:none}
+}
+
+.img--hero{object-position:50% 35%}
+.img--about{object-position:50% 50%}
+.img--detail-tools{object-position:50% 50%}
+.img--detail-beard{object-position:50% 50%}
+.img--detail-interior{object-position:50% 50%}
+
+/* ======================================================== TABLICZKA I ZAKRESY
+ * Moskwa nie dostaje sekcji „mapa + tabelka". Dostaje tabliczkę z drzwi:
+ * adres wielkim drukiem, a godziny sklejone w zakresy — „Poniedziałek – Piątek"
+ * zamiast pięciu identycznych wierszy. Dokładnie tak wypisuje się je na szybie.
+ */
+.kiedy{align-items:start}
+.tabliczka{border-left:3px solid var(--czern);padding-left:clamp(18px,3vw,30px)}
+.tabliczka .ulica{font-family:var(--font);font-weight:700;
+  font-size:clamp(1.8rem,4.4vw,2.8rem);line-height:1.1;margin:0 0 4px}
+.tabliczka .miasto{font-size:1rem;color:var(--szary);margin:0 0 22px}
+.tabliczka .tel{display:inline-block;font-family:var(--font);font-weight:700;
+  font-size:clamp(1.4rem,3.2vw,1.9rem);text-decoration:none;
+  font-variant-numeric:tabular-nums;margin-bottom:18px}
+.tabliczka .linia{display:block}
+
+.zakresy{list-style:none;margin:22px 0 0;padding:0}
+.zakres{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:10px 20px;padding:15px 0;border-bottom:1px solid var(--linia)}
+.zakres:last-child{border-bottom:0}
+.zakres-dni{font-size:.95rem}
+.zakres-czas{font-family:var(--font);font-weight:700;font-size:1.06rem;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+/* Dzień zamknięty nie krzyczy — jest wyszarzony i mniejszy, bo to informacja
+   drugorzędna wobec tego, kiedy zakład jednak pracuje. */
+.zakres--zamkniete .zakres-dni,
+.zakres--zamkniete .zakres-czas{color:var(--szary);font-weight:400;font-size:.95rem}
+/* Zakres obejmujący dzisiejszy dzień dostaje mosiężny znacznik z lewej. */
+.zakres.dzis{position:relative}
+.zakres.dzis::before{content:"";position:absolute;left:-14px;top:50%;transform:translateY(-50%);
+  width:5px;height:5px;border-radius:50%;background:var(--czern)}
+.zakres.dzis .zakres-czas{color:var(--czern)}
+
+/* ==================================== TELEFON: dotyk i czytelność
+ * Zmierzone skryptem scripts/mobile.mjs na 360 i 390 px, w trzech językach.
+ *
+ * Przełącznik języka miał 26×29 px. To jest pierwszy element, w który celuje
+ * ukraiński klient po wejściu na stronę, a opuszek palca ma około 45 px —
+ * czyli trafiał obok. Podpisy i etykiety siedziały na 10.9–11.5 px.
+ *
+ * Rozmiary idą z !important, bo bez tego przegrywają na specyficzności
+ * z regułami dekoracyjnymi (.jezyk .lang, .galeria figcaption). To są progi
+ * dostępności, nie ozdoba — muszą wygrać. Poza wąskim ekranem nic się nie zmienia.
+ */
+@media (max-width: 900px){
+  .lang{
+    min-width:44px !important;min-height:44px !important;padding:0 6px !important;
+    display:inline-flex !important;align-items:center;justify-content:center;
+    font-size:12px !important;
+  }
+  .ham{min-width:44px !important;min-height:44px !important;
+    align-items:center;justify-content:center}
+  .marka,.logo,.znak,.szyld-marka,.tytul-marki,.nazwa{
+    min-height:44px !important;display:flex !important;align-items:center}
+
+  /* Wersaliki z dużym rozstrzeleniem poniżej 12 px są na telefonie
+     nieczytelne, niezależnie od tego, jak dobrze wyglądają na monitorze. */
+  .nadtytul,.nadpis,.etyk,.etykieta,.etykietka,.plakietka,.tag,.mini,
+  .metryczka,.sygnatura,.kd-dzien,.chip-dzien,.dzis-etyk,.dzis-etykieta,
+  .sala-etyk,.para-etyk,.blok-tytul,.zaufanie-etyk,.numer,.numerek,
+  .fakt-etyk,.bilecik-nad,.pas-telefon-etyk,.kreda-czas,
+  figcaption,.kolo-czas,.chip-czas,.pigulka-czas,.kd-czas,.dzwon,
+  .kafel-czas,.zaufanie-pod,.fakt-pod,.os-czas,.wiersz-czas,
+  .lekarz-pwz,.opinia-zrodlo,.reszta-tygodnia,.sala-dni,.sala-czas{
+    font-size:12px !important;
+  }
+
+  /* Długie numery i nazwy ulic nie mogą rozpychać strony w bok. */
+  .tel-link,.tel-duzy,.numer-duzy,.wielki-nr,.duzy-tel,.duzy-numer,
+  .telefon,.numer-xl,.bilecik-numer,.tel,.adr-wielki,.ulica{
+    overflow-wrap:anywhere;
+  }
+}
+
+
+/* ============================ TELEFON: reszta celów i etykiet
+ * Trzecia tura po pomiarze scripts/mobile.mjs. Patrz komentarz w tmp/mobile-3.mjs.
+ */
+@media (max-width: 900px){
+  /* Etykiety i nagłówki tabel: max() nigdy nie zmniejsza, tylko podnosi
+     te, które siedziały poniżej progu. */
+  th,td,dt,label,legend,small,
+  .kol-czas,.kol-cena,.kol-zakres,.poz-nr,.poz-cena,.metka,.cennik,
+  .usluga-cena,.grupa-razy,.skladka li,.dostawa-cena{
+    font-size:max(12px,.8rem);
+  }
+
+  /* Cele dotykowe: telefon w pasku, przyciski, kafelki godzin w kreatorze,
+     rozwijane pytania. Wszystko, co się naciska palcem. */
+  a[href^="tel:"],.btn,.guzik,.klaw,.klawisz,.pig,.pigula,.ramka,.obwodka,
+  .linia,.nr,.tel-link,.tel-btn,.tel-pigula,.dzwon,.telefon-gora,.link-strzalka,
+  .godzina,.dzien,.zakladka,summary{
+    min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  }
+  /* Rozwijane pytania i zakładki są blokowe — wyrównanie do lewej,
+     inaczej tekst wskoczyłby na środek. */
+  summary,.zakladka{justify-content:flex-start}
+
+  /* iOS przybliża stronę przy dotknięciu pola mniejszego niż 16 px.
+     To zachowanie Safari, nie preferencja — jedyne wyjście to 16 px. */
+  input,select,textarea{font-size:16px;min-height:44px}
+  textarea{min-height:80px}
+}
+
+
+/* ================== TELEFON: ostatnie drobiazgi
+ * Dokładne miejsca z tmp/male-teksty.mjs: ceny w cennikach, podpisy przycisków,
+ * numer w pasku i dopisek w logotypie. Wszystko poniżej 12 px na 390 px.
+ * Gola s ma pod znakiem napis EST. KIELCE ustawiony na 9 px — na monitorze
+ * to elegancki detal, w ręce nieczytelna plamka. */
+@media (max-width:900px){
+  .wielka-pigula span,.telefon-gora,.cena-bukietu,.lista-cena,
+  .znak-n,.znak-r,.tydzien summary,.ramka,.bilecik-guziki .ramka,
+  .marka-pod,.hero-adres,.grupa-razy,.cennik,.metka{font-size:12px !important}
+}
+
+/* Hamburger jest kolumnowym flexem (trzy kreski jedna pod drugą), więc
+   nie może dostać ogólnej reguły celu dotykowego — zmieniłaby mu kierunek
+   i rozepchnęła pasek. Rozmiar podnosimy, układ zostawiamy. */
+@media (max-width:900px){
+  .menu-btn{min-width:44px;min-height:44px;justify-content:center;padding:10px 8px}
+}
+
+
+/* ================== TELEFON: budżet paska nagłówka
+ * Patrz komentarz w tmp/mobile-4.mjs — to jest naprawa regresji, którą sam
+ * wprowadziłem, podnosząc cele dotykowe bez sprawdzenia szerokości paska.
+ */
+@media (max-width: 900px){
+  .belka,.nav,.naglowek-strony,.szyld,.pas-gorny,.listwa,.top-bar,.gora{
+    flex-wrap:nowrap;
+  }
+  /* Marka może się skrócić wielokropkiem; reszta paska nie może zniknąć. */
+  .marka,.logo,.znak,.szyld-marka,.tytul-marki,.nazwa,.marka-nazwa{
+    min-width:44px;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;
+  /* Nazwa firmy jest w pasku najwazniejsza — to po nia klient patrzy pierwszy.
+     Wczesniej przelacznik jezyka (3 x 44px) spychal ja do 44px i "Dentika"
+     pokazywala sie jako "De". Guziki jezyka zwezone; WYSOKOSC 44px zostaje,
+     bo to ona decyduje o trafianiu palcem, a 32px szerokosci i tak jest
+     powyzej progu 24px z WCAG 2.5.8. */
+  .jz .lang,.jezyk .lang,.jezyki .lang,.jez .lang{min-width:32px;padding-inline:4px}
+  }
+  .jz,.jezyk,.jezyki{flex:0 0 auto}
+
+  /* Nagłówki tabel: th przegrywa na specyficzności z .cennik thead th. */
+  th,td,.cennik th,.cennik td,.plan th,.plan td,
+  .godziny-tabela th,.godziny-tabela td{font-size:max(12px,.8rem) !important}
+}
+
+/* Poniżej 560 px przycisk CTA z paska ustępuje miejsca telefonowi i menu.
+   Ta sama akcja jest w menu pod hamburgerem i w treści strony, więc nic
+   nie ginie — a pasek przestaje wypychać stronę w bok. */
+@media (max-width: 560px){
+  .btn--belka,.btn--zloty.btn--belka,.btn--czerwony.btn--belka,
+  .btn--glowny.btn--belka,.btn--pelny-kolor.btn--belka{display:none !important}
+}
+
+
+/* ============ TELEFON: ostatnie etykiety i pasek dni
+ * .krok-etyk i podobne to klasy na <label>, wiec wygrywaja z regula na samym
+ * elemencie. Pasek dni w kreatorze rezerwacji ma sie PRZEWIJAC w bok,
+ * a nie rozpychac strone — min-width:0 przywraca przycinanie. */
+@media (max-width:900px){
+  label,legend,.krok-etyk,.znacznik,.wyroznik,.pole-grupa label,
+  .zapis-form label,.wizyta-form label,.zam-form label,.rez-pole label{
+    font-size:max(12px,.78rem) !important;
+  }
+  .dni,#dni,.godziny,#godziny{min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .kreator,.kreator .krok{min-width:0}
+}
+
+
+/* ============ TELEFON: wyliczona lista drobnego tekstu
+ * Selektory zebrane ze strony skryptem tmp/zbierz-male.mjs — to dokładnie te
+ * elementy, które na 390 px renderowały się poniżej 12 px. Lista jest
+ * wyliczona, nie zgadnięta, więc nie zostawia ogonów. */
+@media (max-width:900px){
+  a,
+  span{font-size:12px !important}
+}
+
+
+@media (max-width:900px){
+  .skip{min-height:44px;display:inline-flex;align-items:center}
+}
+
+/* switcher w menu mobilnym */
+@media (max-width:560px){
+  header .jez{display:none}
+  .jez--mob{display:flex;gap:2px;padding:10px 0 2px}
+  .jez--mob .lang{min-width:44px;min-height:44px;display:inline-flex;
+    align-items:center;justify-content:center}
+}
+@media (min-width:561px){ .jez--mob{display:none} }
